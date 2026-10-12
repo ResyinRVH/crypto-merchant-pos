@@ -56,18 +56,64 @@ export default function HeroSection() {
 
         <div className="lg:col-span-2"></div>
 
-        <div className="lg:col-span-4 relative flex justify-center">
-          <Image src="/images/Phone.webp" alt="Hero Image" width={350} height={350} priority />
+        <div className="lg:col-span-4 flex justify-center items-center">
+          <div className="relative w-[280px] xs:w-[310px] sm:w-[350px]">
+            <Image
+              src="/images/Phone.webp"
+              alt="Hero Image"
+              width={350}
+              height={350}
+              priority
+              className="w-full h-auto object-contain block drop-shadow-2xl"
+            />
 
-          <div className="bg-white rounded-xl w-[200px] h-[170px] flex items-center justify-center absolute top-45 left-5 rotate-13 lg:top-45 lg:left-4 lg:rotate-13 shadow-lg shadow-[#000000]/20">
-            <Image src="/images/QR.webp" alt="QR Image" width={120} height={120} priority className="rounded-xl -rotate-13" />
+            <div className="bg-white rounded-xl sm:rounded-2xl w-[58%] aspect-[1.18/1] flex items-center justify-center absolute top-[35%] left-[5%] rotate-12 shadow-lg shadow-black/30 z-20">
+              <div className="relative w-[65%] aspect-square">
+                <Image
+                  src="/images/QR.webp"
+                  alt="QR Image"
+                  fill
+                  sizes="150px"
+                  priority
+                  className="rounded-lg object-contain -rotate-12"
+                />
+              </div>
+            </div>
+
+            <div className="absolute -top-[10%] -left-[5%] w-[38%] aspect-square z-20">
+              <Image
+                src="/images/Bitcoin.webp"
+                alt="Bitcoin"
+                fill
+                sizes="150px"
+                priority
+                className="object-contain drop-shadow-xl"
+              />
+            </div>
+
+            <div className="absolute top-[45%] -left-[20%] w-[38%] aspect-square z-20">
+              <Image
+                src="/images/Usdt.webp"
+                alt="USDT"
+                fill
+                sizes="150px"
+                priority
+                className="object-contain drop-shadow-xl"
+              />
+            </div>
+
+            <div className="absolute top-[72%] -right-[0%] w-[38%] aspect-square z-20">
+              <Image
+                src="/images/Ethereum.webp"
+                alt="Ethereum"
+                fill
+                sizes="150px"
+                priority
+                className="object-contain drop-shadow-2xl"
+              />
+            </div>
           </div>
-
-          <Image src="/images/Bitcoin.webp" alt="Hero Image" width={150} height={150} priority className="absolute top-0 -left-8 lg:top-0 lg:left-0 lg:-translate-x-1/4 lg:-translate-y-1/4" />
-          <Image src="/images/Usdt.webp" alt="Hero Image" width={150} height={150} priority className="absolute top-50 -left-10 lg:top-58 lg:-left-15 lg:-translate-x-1/4 lg:-translate-y-1/4" />
-          <Image src="/images/Etherium.webp" alt="Hero Image" width={250} height={250} priority className="absolute top-80 left-32 lg:top-80 lg:left-60 lg:-translate-x-1/4 lg:-translate-y-1/4" />
         </div>
-
       </main>
 
       {address && (
