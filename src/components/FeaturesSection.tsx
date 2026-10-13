@@ -25,7 +25,7 @@ export default function FeaturesSection() {
 
   return (
     <section id="features" className="scroll-mt-24 relative bg-[#03000A] text-white py-24 px-6 overflow-hidden">
-      <div className="absolute left-1/5 bottom-1 -translate-y-1/2  w-[800px] h-[800px] bg-gradient-to-tr from-[#6041C2] to-transparent rounded-full blur-[50px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-radial from-[#6041C2] to-transparent rounded-full blur-[90px] pointer-events-none" />
       <div className="relative z-10 max-w-6xl mx-auto space-y-12">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <p className="text-xs uppercase tracking-[0.25em] text-white/60 font-semibold">
