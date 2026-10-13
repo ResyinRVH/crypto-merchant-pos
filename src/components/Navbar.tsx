@@ -19,8 +19,8 @@ export default function Navbar() {
                 <Link href="/#docs" className="hover:text-white transition-colors">
                     Docs
                 </Link>
-                <Link href="/merchant" className="hover:text-white transition-colors">
-                    Merchant Portal
+                <Link href="/merchant/dashboard" className="hover:text-white transition-colors">
+                    Merchant
                 </Link>
             </ul>
 
