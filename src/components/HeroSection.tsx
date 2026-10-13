@@ -1,30 +1,30 @@
 'use client'
 
-import { useState } from 'react'
 import Image from 'next/image'
 import Navbar from './Navbar'
+import { useRouter } from 'next/navigation'
 import { useConnection } from 'wagmi'
-import CreateInvoiceModal from './CreateInvoiceModal'
-import InvoiceDisplayModal from './InvoiceDisplayModal'
+import { Button } from '@/components/ui/button'
 
 export default function HeroSection() {
-  const { isConnected, address } = useConnection()
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isDisplayModalOpen, setIsDisplayModalOpen] = useState(false)
-  const [activeInvoice, setActiveInvoice] = useState<{
-    title: string
-    amount: string
-    uri: string
-  } | null>(null)
+  const router = useRouter()
+  const { isConnected } = useConnection()
+
+  const handleCreateInvoiceClick = () => {
+    if (!isConnected) {
+      alert('Silakan hubungkan dompet merchant terlebih dahulu.')
+      return
+    }
+    router.push('/merchant/dashboard')
+  }
 
   return (
-    <div className="relative min-h-screen lg:px-20 text-white overflow-hidden">
+    <div className="relative lg:px-20 text-white overflow-hidden">
       <Navbar />
       <div className="absolute -top-60 left-20 w-[700px] h-[700px] bg-radial from-[#714CBC] to-[#3D268C] blur-[100px] rounded-full pointer-events-none -translate-x-1/3 -translate-y-1/3" />
       <div className="absolute bottom-0 right-0 w-[700px] h-[700px] bg-linear-to-r from-[#714CBC] to-[#3D268C] blur-[100px] pointer-events-none translate-x-1/4 translate-y-1/4" />
 
       <main className="relative z-10 max-w-7xl mx-auto px-6 pt-12 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-
         <div className="lg:col-span-6 space-y-8">
           <h1 className="text-4xl sm:text-5xl lg:text-4xl font-extrabold tracking-tight text-white leading-[1.5]">
             Accept Crypto Payments as Effortlessly as Cash
@@ -35,22 +35,19 @@ export default function HeroSection() {
           </p>
 
           <div className="flex flex-wrap items-center gap-4 pt-2">
-            <button
-              onClick={() => {
-                if (!isConnected) {
-                  alert('Silakan hubungkan dompet merchant terlebih dahulu.')
-                  return
-                }
-                setIsModalOpen(true)
-              }}
-              className="bg-[#FC5E00] hover:bg-[#FF7315] text-white font-semibold text-base px-8 py-4 rounded-xl shadow-[4px_4px_20px_rgba(252,94,0,0.4)] transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+            <Button
+              onClick={handleCreateInvoiceClick}
+              className="bg-[#FC5E00] hover:bg-[#FF7315] text-white font-semibold text-base px-8 py-6 rounded-xl shadow-[4px_4px_20px_rgba(252,94,0,0.4)] transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
             >
               Create Invoice
-            </button>
+            </Button>
 
-            <button className="bg-[#3D414D] hover:bg-[#4A4F5E] text-white font-semibold text-base px-8 py-4 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer">
+            <Button 
+              onClick={() => router.push('/merchant')}
+              className="bg-[#3D414D] hover:bg-[#4A4F5E] text-white font-semibold text-base px-8 py-6 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+            >
               Try Demo
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -115,24 +112,6 @@ export default function HeroSection() {
           </div>
         </div>
       </main>
-
-      {address && (
-        <CreateInvoiceModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          merchantAddress={address}
-          onInvoiceCreated={(invoice) => {
-            setActiveInvoice(invoice)
-            setIsModalOpen(false)
-            setIsDisplayModalOpen(true)
-          }}
-        />
-      )}
-      <InvoiceDisplayModal
-        isOpen={isDisplayModalOpen}
-        onClose={() => setIsDisplayModalOpen(false)}
-        invoice={activeInvoice}
-      />
     </div>
   )
 }
