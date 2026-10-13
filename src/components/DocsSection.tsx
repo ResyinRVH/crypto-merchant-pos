@@ -59,16 +59,6 @@ export default function DocsSection() {
           </div>
         ))}
       </div>
-
-      <div className="relative z-10 mt-16 p-6 rounded-2xl bg-[#0d0e12] border border-white/10">
-        <div className="flex items-center justify-between pb-4 border-b border-white/10">
-          <span className="text-xs font-mono text-white/50">EIP-681 Standard URI Payload</span>
-          <span className="text-xs font-mono text-[#FC5E00]">ERC-20 / USDT</span>
-        </div>
-        <div className="mt-4 font-mono text-xs sm:text-sm text-emerald-400 break-all leading-relaxed bg-black/40 p-4 rounded-xl border border-white/5">
-          ethereum:0xTokenContract@chainId/transfer?address=0xMerchantAddress&amp;uint256=12500000
-        </div>
-      </div>
     </section>
   )
 }
