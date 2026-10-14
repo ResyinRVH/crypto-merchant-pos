@@ -3,7 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { useAccount } from 'wagmi'
-import MerchantSidebar from '../../components/merchant/Sidebar'
+import MerchantSidebar from '@/components/merchant/Sidebar'
 
 export default function MerchantLayout({
   children,
