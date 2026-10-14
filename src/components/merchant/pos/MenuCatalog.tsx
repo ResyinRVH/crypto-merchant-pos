@@ -26,7 +26,7 @@ export function MenuCatalog({
           </h2>
         </div>
 
-        <div className="py-6 grid grid-cols-2 sm:grid-cols-4 gap-4 overflow-y-auto max-h-[560px]">
+        <div className="py-6 grid grid-cols-2 sm:grid-cols-4 gap-4 overflow-y-auto">
           {items.map((item) => (
             <button
               key={item.id}
