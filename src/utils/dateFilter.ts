@@ -7,6 +7,10 @@ export function isDateInFilterRange(dateString: string, filter: string): boolean
   const oneDayMs = 24 * 60 * 60 * 1000
 
   switch (filter) {
+    case 'Today': {
+      const Today = todayStart 
+      return itemTime >= Today
+    }
     case 'Yesterday': {
       const yesterdayStart = todayStart - oneDayMs
       return itemTime >= yesterdayStart

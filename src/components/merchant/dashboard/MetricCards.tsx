@@ -2,40 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { ArrowUpRight, Receipt, ShieldCheck } from 'lucide-react'
+import { isDateInFilterRange } from '@/utils/dateFilter'
 
 interface MetricCardsProps {
   activeFilter?: string
-}
-
-function checkDateInRange(dateString: string | undefined, filter: string): boolean {
-  if (!dateString) return true
-
-  const itemTime = new Date(dateString).getTime()
-  const now = new Date()
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
-  const oneDayMs = 24 * 60 * 60 * 1000
-
-  switch (filter) {
-    case 'Yesterday': {
-      const yesterdayStart = todayStart - oneDayMs
-      return itemTime >= yesterdayStart
-    }
-    case 'Last 7 days': {
-      const sevenDaysAgo = todayStart - 7 * oneDayMs
-      return itemTime >= sevenDaysAgo
-    }
-    case 'Last 30 days': {
-      const thirtyDaysAgo = todayStart - 30 * oneDayMs
-      return itemTime >= thirtyDaysAgo
-    }
-    case 'Last 12 month': {
-      const oneYearAgo = new Date(now)
-      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
-      return itemTime >= oneYearAgo.getTime()
-    }
-    default:
-      return true
-  }
 }
 
 export default function MetricCards({ activeFilter = 'Yesterday' }: MetricCardsProps) {
@@ -49,7 +19,7 @@ export default function MetricCards({ activeFilter = 'Yesterday' }: MetricCardsP
         const list = JSON.parse(stored)
         if (Array.isArray(list)) {
           const filtered = list.filter((item: { createdAt?: string }) =>
-            checkDateInRange(item.createdAt, activeFilter)
+            item.createdAt ? isDateInFilterRange(item.createdAt, activeFilter) : true
           )
 
           const total = filtered.reduce(
@@ -105,7 +75,7 @@ export default function MetricCards({ activeFilter = 'Yesterday' }: MetricCardsP
             Metode Settlement
           </span>
           <div className="text-xl font-bold text-emerald-400">
-            Non-Custodial (Direct)
+            Non Custodial (Direct)
           </div>
         </div>
         <div className="absolute top-4 right-4 w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">

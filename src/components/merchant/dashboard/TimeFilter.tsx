@@ -1,6 +1,6 @@
 'use client'
 
-export const TIME_FILTERS = ['Yesterday', 'Last 7 days', 'Last 30 days', 'Last 12 month']
+export const TIME_FILTERS = ['Today', 'Yesterday', 'Last 7 days', 'Last 30 days', 'Last 12 month']
 
 interface TimeFilterProps {
   activeFilter: string
