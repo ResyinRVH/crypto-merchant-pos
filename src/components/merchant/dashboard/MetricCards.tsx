@@ -8,7 +8,7 @@ interface MetricCardsProps {
   activeFilter?: string
 }
 
-export default function MetricCards({ activeFilter = 'Yesterday' }: MetricCardsProps) {
+export default function MetricCards({ activeFilter = 'Today' }: MetricCardsProps) {
   const [omzet, setOmzet] = useState('0.00')
   const [paidInvoicesCount, setPaidInvoicesCount] = useState(0)
 

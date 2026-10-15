@@ -6,7 +6,7 @@ import TransactionTable from "@/components/merchant/dashboard/TransactionTable"
 import TimeFilter from '@/components/merchant/dashboard/TimeFilter'
 
 export default function MerchantDashboardPage() {
-  const [activeFilter, setActiveFilter] = useState('Yesterday')
+  const [activeFilter, setActiveFilter] = useState('Today')
   return (
     <>
       <div>
