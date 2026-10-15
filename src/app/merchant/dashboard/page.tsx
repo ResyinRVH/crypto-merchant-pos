@@ -14,7 +14,7 @@ export default function MerchantDashboardPage() {
       </div>
       <TimeFilter activeFilter={activeFilter} onFilterChange={setActiveFilter}/>
       <MetricCards activeFilter={activeFilter}/>
-      <TransactionTable />
+      <TransactionTable activeFilter={activeFilter}/>
     </>
   )
 }

@@ -1,19 +1,18 @@
-export function isDateInFilterRange(dateString: string, filter: string): boolean {
-  const itemDate = new Date(dateString)
+export function isDateInFilterRange(dateString: string | undefined, filter: string): boolean {
+  if (!dateString) return false
   const now = new Date()
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
-  const itemTime = itemDate.getTime()
+  const itemTime = new Date(dateString).getTime()
 
   const oneDayMs = 24 * 60 * 60 * 1000
 
   switch (filter) {
     case 'Today': {
-      const Today = todayStart 
-      return itemTime >= Today
+      return itemTime >= todayStart
     }
     case 'Yesterday': {
       const yesterdayStart = todayStart - oneDayMs
-      return itemTime >= yesterdayStart
+      return itemTime >= yesterdayStart && itemTime < todayStart
     }
     case 'Last 7 days': {
       const sevenDaysAgo = todayStart - 7 * oneDayMs
