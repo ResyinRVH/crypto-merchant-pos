@@ -1,9 +1,29 @@
 'use client'
 
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ConnectButton, useConnectModal } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
+import { useAccount } from "wagmi";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
+    const { isConnected } = useAccount();
+    const { openConnectModal } = useConnectModal();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const isWalletConnected = mounted && isConnected;
+
+    const handleMerchantClick = (e: React.MouseEvent) => {
+        if (!isWalletConnected) {
+            e.preventDefault();
+            if (openConnectModal) {
+                openConnectModal();
+            }
+        }
+    };
     return (
         <nav className="sticky top-0 z-20 max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
             <div className="text-2xl font-bold tracking-tight text-white">
@@ -19,9 +39,20 @@ export default function Navbar() {
                 <Link href="/#docs" className="hover:text-white transition-colors">
                     Docs
                 </Link>
-                <Link href="/merchant/dashboard" className="hover:text-white transition-colors">
-                    Merchant
-                </Link>
+                {isWalletConnected ? (
+
+                    <Link href="/merchant/dashboard" className="hover:text-white transition-colors">
+                        Merchant
+                    </Link>
+                ) : (
+                    <span
+                        aria-disabled="true"
+                        title="Hubungkan wallet terlebih dahulu"
+                        className="text-white/20 cursor-not-allowed select-none"
+                    >
+                        Merchant
+                    </span>
+                )}
             </ul>
 
             <div>
