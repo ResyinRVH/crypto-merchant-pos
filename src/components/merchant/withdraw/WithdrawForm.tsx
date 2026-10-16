@@ -12,6 +12,8 @@ interface WithdrawFormProps {
   setWithdrawAmount: (val: string) => void
   onSetMax: () => void
   onSubmit: (e: React.FormEvent) => void
+  isPending?: boolean 
+  isConfirming?: boolean
 }
 
 export default function WithdrawForm({
@@ -21,7 +23,12 @@ export default function WithdrawForm({
   setWithdrawAmount,
   onSetMax,
   onSubmit,
+  isPending = false,
+  isConfirming = false,
 }: WithdrawFormProps) {
+  const isLoading = isPending || isConfirming
+  const isFormValid = Boolean(withdrawAddress && withdrawAmount && Number(withdrawAmount) > 0)
+
   return (
     <div className="lg:col-span-7 bg-[#03000A] border border-white/10 rounded-2xl p-6 lg:p-8 shadow-xl">
       <form onSubmit={onSubmit} className="space-y-6">
@@ -30,8 +37,9 @@ export default function WithdrawForm({
           <Input
             placeholder="0x..."
             value={withdrawAddress}
+            disabled={isLoading}
             onChange={(e) => setWithdrawAddress(e.target.value)}
-            className="bg-[#03000A] border-white/10 text-white rounded-xl h-12 text-xs font-mono placeholder:text-white/20 focus-visible:ring-[#FC5E00]"
+            className="bg-[#03000A] border-white/10 text-white rounded-xl h-12 text-xs font-mono placeholder:text-white/20 focus-visible:ring-[#FC5E00] disabled:opacity-50"
           />
         </div>
 
@@ -41,7 +49,8 @@ export default function WithdrawForm({
             <button
               type="button"
               onClick={onSetMax}
-              className="text-[11px] font-semibold text-[#FC5E00] hover:text-[#FF7315] cursor-pointer"
+              disabled={isLoading}
+              className="text-[11px] font-semibold text-[#FC5E00] hover:text-[#FF7315] disabled:opacity-50 cursor-pointer"
             >
               Tarik Semua (Max)
             </button>
@@ -49,11 +58,13 @@ export default function WithdrawForm({
           <div className="relative">
             <Input
               type="number"
-              step="0.01"
+              step="any"
+              min="0"
               placeholder="0.00"
               value={withdrawAmount}
+              disabled={isLoading}
               onChange={(e) => setWithdrawAmount(e.target.value)}
-              className="bg-[#03000A] border-white/10 text-white rounded-xl h-12 text-xs font-mono pr-16 placeholder:text-white/20 focus-visible:ring-[#FC5E00]"
+              className="bg-[#03000A] border-white/10 text-white rounded-xl h-12 text-xs font-mono pr-16 placeholder:text-white/20 focus-visible:ring-[#FC5E00] disabled:opacity-50"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-mono text-white/40 pointer-events-none">
               USDT
@@ -63,9 +74,14 @@ export default function WithdrawForm({
 
         <Button
           type="submit"
-          className="w-full bg-[#FC5E00] hover:bg-[#FF7315] text-white font-semibold rounded-xl h-12 transition-all duration-200 shadow-[0_4px_20px_rgba(252,94,0,0.35)] cursor-pointer"
+          disabled={!isFormValid || isLoading}
+          className="w-full bg-[#FC5E00] hover:bg-[#FF7315] disabled:bg-neutral-800 disabled:text-white/40 text-white font-semibold rounded-xl h-12 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
         >
-          Kirim ke Cold Wallet
+          {isPending
+            ? 'Konfirmasi di MetaMask...'
+            : isConfirming
+            ? 'Memproses On-Chain...'
+            : 'Kirim ke Cold Wallet'}
         </Button>
       </form>
     </div>

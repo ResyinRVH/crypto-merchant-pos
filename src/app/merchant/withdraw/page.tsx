@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useAccount, useReadContract } from 'wagmi'
-import { formatUnits } from 'viem'
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import { formatUnits, parseUnits } from 'viem'
 import WithdrawForm from '@/components/merchant/withdraw/WithdrawForm'
 import BalanceCard from '@/components/merchant/withdraw/BalanceCard'
 import { USDC_ADDRESS, ERC20_ABI } from '@/constants/contracts'
@@ -14,7 +14,7 @@ export default function WithdrawPage() {
 
   const { address: merchantAddress, isConnected } = useAccount()
 
-  const { data: rawBalance, isSuccess } = useReadContract({
+  const { data: rawBalance, isSuccess, refetch: refetchBalance } = useReadContract({
     address: USDC_ADDRESS,
     abi: ERC20_ABI,
     functionName: 'balanceOf',
@@ -32,31 +32,30 @@ export default function WithdrawPage() {
     }
   }, [rawBalance, isSuccess])
 
+  const { data: hash, isPending, writeContract } = useWriteContract()
+
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash, })
+
   useEffect(() => {
-    if (!isConnected) {
-      const stored = localStorage.getItem('pos_invoices')
-      if (stored) {
-        try {
-          const list = JSON.parse(stored)
-          if (Array.isArray(list) && list.length > 0) {
-            const total = list.reduce(
-              (acc: number, item: { amount?: string | number }) =>
-                acc + (Number(item.amount) || 0),
-              0
-            )
-            setAvailableBalance(total.toFixed(2))
-          }
-        } catch (err) {
-          console.error('Gagal mengambil saldo dari pos_invoices:', err)
-        }
-      }
+    if (isConfirmed) {
+      refetchBalance()
+      setWithdrawAmount('')
+      alert('Penarikan dana berhasil')
     }
-  }, [isConnected])
+  }, [isConfirmed, refetchBalance])
 
   const handleWithdraw = (e: React.FormEvent) => {
     e.preventDefault()
     if (!withdrawAddress || !withdrawAmount) return
-    alert(`Memproses transfer on-chain ${withdrawAmount} USDT ke ${withdrawAddress}`)
+
+    const amountInUnits = parseUnits(withdrawAmount, 6)
+
+    writeContract({
+      address: USDC_ADDRESS,
+      abi: ERC20_ABI,
+      functionName: 'transfer',
+      args: [withdrawAddress as `0x${string}`, amountInUnits],
+    })
   }
 
   const handleSetMax = () => {
