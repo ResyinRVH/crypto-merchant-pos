@@ -1,20 +1,57 @@
 'use client'
 
 import { Wallet, Info } from 'lucide-react'
-import { useAccount } from 'wagmi'
-import { useState, useEffect } from 'react'
+import { useAccount, useGasPrice } from 'wagmi'
+import { useState, useEffect, useMemo } from 'react'
+import { formatEther } from 'viem'
 
 interface BalanceCardProps {
   availableBalance: string
 }
 
+const BLOCK_TIME_BY_CHAIN: Record<number, string> = {
+  8453: '~2 Detik',   
+  84532: '~2 Detik',
+  11155111: '~12 Detik',
+  1: '~12 Detik',   
+  42161: '~0.25 Detik',
+  10: '~2 Detik',
+}
 export default function BalanceCard({ availableBalance }: BalanceCardProps) {
   const { chain, isConnected } = useAccount()
   const [mounted, setMounted] = useState(false)
 
+  const { data: gasPrice } = useGasPrice({
+    query: {
+      refetchInterval: 10000,
+      enabled: isConnected,
+    },
+  })
+
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  const estimatedGasText = useMemo(() => {
+    if (!gasPrice || !isConnected) return '< 0.0001 ETH'
+    try {
+      const estimatedUnits = BigInt(65000)
+      const totalGasWei = gasPrice * estimatedUnits
+      const ethValue = parseFloat(formatEther(totalGasWei))
+
+      if (ethValue < 0.00001) {
+        return '< 0.00001 ETH'
+      }
+      return `${ethValue.toFixed(5)} ETH`
+    } catch {
+      return '< 0.0001 ETH'
+    }
+  }, [gasPrice, isConnected])
+
+  const confirmationTime = useMemo(() => {
+    if (!chain?.id) return '~2 Detik'
+    return BLOCK_TIME_BY_CHAIN[chain.id] ?? '~2-5 Detik'
+  }, [chain?.id])
 
   const networkName = mounted && isConnected && chain ? chain.name : 'Not Connected'
 
@@ -42,11 +79,11 @@ export default function BalanceCard({ availableBalance }: BalanceCardProps) {
           </div>
           <div className="flex justify-between py-1">
             <span>Estimated Gas Costs</span>
-            <span className="text-white font-mono">&lt; 0.0001 ETH</span>
+            <span className="text-white font-mono">{mounted ? estimatedGasText : '< 0.0001 ETH'}</span>
           </div>
           <div className="flex justify-between py-1">
             <span>Confirmation Time</span>
-            <span className="text-emerald-400 font-semibold">~2 Detik</span>
+            <span className="text-emerald-400 font-semibold">{mounted ? confirmationTime : '~2 Detik'}</span>
           </div>
         </div>
       </div>
