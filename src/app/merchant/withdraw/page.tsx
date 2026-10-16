@@ -1,32 +1,57 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useAccount, useReadContract } from 'wagmi'
+import { formatUnits } from 'viem'
 import WithdrawForm from '@/components/merchant/withdraw/WithdrawForm'
 import BalanceCard from '@/components/merchant/withdraw/BalanceCard'
+import { USDC_ADDRESS, ERC20_ABI } from '@/constants/contracts'
 
 export default function WithdrawPage() {
   const [withdrawAddress, setWithdrawAddress] = useState('')
   const [withdrawAmount, setWithdrawAmount] = useState('')
   const [availableBalance, setAvailableBalance] = useState('0.00')
 
+  const { address: merchantAddress, isConnected } = useAccount()
+
+  const { data: rawBalance, isSuccess } = useReadContract({
+    address: USDC_ADDRESS,
+    abi: ERC20_ABI,
+    functionName: 'balanceOf',
+    args: merchantAddress ? [merchantAddress] : undefined,
+    query: {
+      enabled: Boolean(isConnected && merchantAddress),
+      refetchInterval: 5000,
+    },
+  })
+
   useEffect(() => {
-    const stored = localStorage.getItem('pos_invoices')
-    if (stored) {
-      try {
-        const list = JSON.parse(stored)
-        if (Array.isArray(list) && list.length > 0) {
-          const total = list.reduce(
-            (acc: number, item: { amount?: string | number }) =>
-              acc + (Number(item.amount) || 0),
-            0
-          )
-          setAvailableBalance(total.toFixed(2))
+    if (isSuccess && rawBalance !== undefined) {
+      const formatted = formatUnits(rawBalance, 6)
+      setAvailableBalance(Number(formatted).toFixed(2))
+    }
+  }, [rawBalance, isSuccess])
+
+  useEffect(() => {
+    if (!isConnected) {
+      const stored = localStorage.getItem('pos_invoices')
+      if (stored) {
+        try {
+          const list = JSON.parse(stored)
+          if (Array.isArray(list) && list.length > 0) {
+            const total = list.reduce(
+              (acc: number, item: { amount?: string | number }) =>
+                acc + (Number(item.amount) || 0),
+              0
+            )
+            setAvailableBalance(total.toFixed(2))
+          }
+        } catch (err) {
+          console.error('Gagal mengambil saldo dari pos_invoices:', err)
         }
-      } catch (err) {
-        console.error('Gagal mengambil saldo dari pos_invoices:', err)
       }
     }
-  }, [])
+  }, [isConnected])
 
   const handleWithdraw = (e: React.FormEvent) => {
     e.preventDefault()

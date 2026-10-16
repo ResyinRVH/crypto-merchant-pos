@@ -21,7 +21,7 @@ export default function BalanceCard({ availableBalance }: BalanceCardProps) {
 
         <div className="flex items-baseline gap-2">
           <span className="text-3xl font-black font-mono text-white">{availableBalance}</span>
-          <span className="text-sm font-bold text-[#FC5E00]">USDT</span>
+          <span className="text-sm font-bold text-[#FC5E00]">USDC</span>
         </div>
 
         <div className="pt-2 border-t border-white/5 space-y-2 text-xs text-white/60">
