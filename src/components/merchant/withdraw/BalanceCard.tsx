@@ -1,12 +1,23 @@
 'use client'
 
 import { Wallet, Info } from 'lucide-react'
+import { useAccount } from 'wagmi'
+import { useState, useEffect } from 'react'
 
 interface BalanceCardProps {
   availableBalance: string
 }
 
 export default function BalanceCard({ availableBalance }: BalanceCardProps) {
+  const { chain, isConnected } = useAccount()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const networkName = mounted && isConnected && chain ? chain.name : 'Not Connected'
+
   return (
     <div className="lg:col-span-5 space-y-4">
       <div className="bg-[#03000A] border border-white/10 rounded-2xl p-6 shadow-xl space-y-4">
@@ -27,7 +38,7 @@ export default function BalanceCard({ availableBalance }: BalanceCardProps) {
         <div className="pt-2 border-t border-white/5 space-y-2 text-xs text-white/60">
           <div className="flex justify-between py-1">
             <span>Network</span>
-            <span className="text-white font-mono">Base Sepolia</span>
+            <span className="text-white font-mono">{networkName}</span>
           </div>
           <div className="flex justify-between py-1">
             <span>Estimated Gas Costs</span>
@@ -43,7 +54,7 @@ export default function BalanceCard({ availableBalance }: BalanceCardProps) {
       <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 flex gap-3 text-xs text-white/50 leading-relaxed">
         <Info className="w-4 h-4 text-[#FC5E00] shrink-0 mt-0.5" />
         <span>
-          Pastikan alamat tujuan mendukung token ERC-20 pada jaringan Base. Pengiriman ke alamat yang salah tidak dapat dibatalkan secara on-chain.
+          Pastikan alamat tujuan mendukung token ERC-20 pada jaringan {''} {mounted && chain?.name ? chain.name : 'terkait'}. Pengiriman ke alamat yang salah tidak dapat dibatalkan secara on-chain.
         </span>
       </div>
     </div>
